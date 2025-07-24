@@ -1,0 +1,32 @@
+volumes:
+  anthropic-config:
+
+services:
+  anthropic-cli-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.anthropic.node
+    
+    container_name: anthropic-cli-node
+    
+    # Mount your current codebase into the container
+    volumes:
+      - .:/app
+      # Mount the named volume to persist the CLI's configuration
+      - anthropic-config:/root/.config/anthropic
+    
+    # Set the working directory inside the container to your mounted codebase
+    working_dir: /app
+    
+    # Keep the container running in interactive mode
+    stdin_open: true 
+    tty: true        
+    
+    # Command to run on container startup. This will drop you into a shell
+    # inside the container, from where you can then run `gemini`.
+    command: /bin/bash
+    
+    # Environment variable for your Google API Key (if you're not using personal account login)
+    # Replace 'ATHROPIC_API_KEY' with your actual key
+    environment:
+      - ATHROPIC_API_KEY=${ATHROPIC_KEY}
