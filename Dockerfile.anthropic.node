@@ -1,0 +1,14 @@
+# Use official Node image
+FROM node:20-alpine
+
+# Add bash (optional, but helpful)
+RUN apk add --no-cache bash
+
+# Set working directory
+WORKDIR /app
+
+# Install gemini-cli globally
+RUN npm install -g @anthropic-ai/claude-code
+
+# Default command (interactive shell)
+CMD [ "bash" ]
