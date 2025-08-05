@@ -1,0 +1,15 @@
+version: '3.8'
+
+services: 
+  cloudsql-proxy: 
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.18.0
+    container_name: cloudsql-proxy
+    restart: unless-stopped
+    volumes: 
+      - ./keyfile:/etc/secrets/service-account-key.json:ro
+    ports: 
+      - "127.0.0.1:5432:5432"
+    command: 
+      - "--credentials-file=/etc/secrets/service-account-key.json"
+      - "--port=5432"
+      - "instanceName"
