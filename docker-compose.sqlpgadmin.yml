@@ -1,0 +1,31 @@
+version: '3.8'
+
+services: 
+  cloudsql-proxy: 
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.18.0
+    container_name: cloudsql-proxy
+    restart: unless-stopped
+    volumes: 
+      - ./kefile:/etc/secrets/service-account-key.json:ro
+    command: 
+      - "--credentials-file=/etc/secrets/service-account-key.json"
+      - "--address=0.0.0.0"
+      - "--port=5432"
+      - "instancename"
+
+  pgadmin:
+    image: dpage/pgadmin4:9.6.0@sha256:2c7d73e13bd6c30b1d53e4c25d0d6d81adbd0799c4f4d6a09efc5d68fca5d16d
+    container_name: pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"  # Expose pgAdmin on localhost:5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - cloudsql-proxy
+
+volumes:
+  pgadmin_data:
